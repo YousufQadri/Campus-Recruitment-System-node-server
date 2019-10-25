@@ -1,0 +1,20 @@
+{
+  "name": "crs-server",
+  "version": "1.0.0",
+  "description": "Campus Recruitment System (Node Server)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "development": "nodemon server.js"
+  },
+  "author": "Yousuf",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/joi": "^16.1.7",
+    "bcryptjs": "^2.4.3",
+    "config": "^3.2.3",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.7.7"
+  }
+}
