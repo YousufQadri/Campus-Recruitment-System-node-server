@@ -4,19 +4,6 @@ const validator = require(validator);
 
 const UserSchema = new Schema(
   {
-    username: {
-      type: String,
-      required: true,
-      unique: true,
-      trim: true,
-      lowercase: true
-    },
-    password: {
-      type: String,
-      required: true,
-      minlength: 4,
-      trim: true
-    },
     email: {
       type: String,
       required: true,
@@ -26,9 +13,10 @@ const UserSchema = new Schema(
         }
       }
     },
-    contact: {
-      type: Number,
+    password: {
+      type: String,
       required: true,
+      minlength: 4,
       trim: true
     },
     type: {
@@ -36,6 +24,11 @@ const UserSchema = new Schema(
       required: true,
       trim: true
     }
+    // contact: {
+    //   type: Number,
+    //   required: true,
+    //   trim: true
+    // },
   },
   {
     timestamp: true
