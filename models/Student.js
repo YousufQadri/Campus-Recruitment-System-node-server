@@ -13,7 +13,6 @@ const StudentSchema = new Schema(
     },
     appliedJobs: {
       type: Array,
-      required: true,
       default: []
     },
     studentID: {
