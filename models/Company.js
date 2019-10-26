@@ -7,11 +7,17 @@ const CompanySchema = new Schema(
       type: String,
       required: true
     },
+    description: {
+      type: String,
+      required: true,
+      default: ""
+    },
     website: {
       type: String,
-      required: true
+      required: true,
+      default: ""
     },
-    userID: {
+    companyID: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true
