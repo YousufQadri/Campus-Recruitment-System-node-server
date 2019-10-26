@@ -95,7 +95,7 @@ router.post("/register", async (req, res) => {
 
 // @route    POST api/v1/user/login
 // @desc     Login user
-// @access   Publi
+// @access   Public
 router.post("/login", async (req, res) => {
   // Destructure email & password
   let { email, password, type } = req.body;
