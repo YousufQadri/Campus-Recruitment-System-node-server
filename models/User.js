@@ -30,9 +30,15 @@ const UserSchema = new Schema(
       type: Number,
       required: true,
       trim: true
+    },
+    type: {
+      type: String,
+      required: true,
+      trim: true
     }
   },
   {
     timestamp: true
   }
 );
+module.exports = mongoose.model("User", UserSchema);
