@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const cors = require("cors");
 
 const connectDB = require("./config/db");
 const user = require("./routes/user");
@@ -11,6 +12,7 @@ const job = require("./routes/job");
 connectDB();
 
 // Middleware
+app.use(cors());
 app.use(express.json({ extender: false }));
 
 // Routes
