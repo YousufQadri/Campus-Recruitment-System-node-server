@@ -4,6 +4,7 @@ const Joi = require("@hapi/joi");
 const mongoose = require("mongoose");
 
 const Job = require("../models/Job");
+const User = require("../models/User");
 const auth = require("../middlewares/auth");
 
 // create API params schema for validation
@@ -64,6 +65,22 @@ router.post("/create-job", auth, async (req, res) => {
     let job = await Job.findOne({
       $and: [{ companyID: req.user.id }, { title }]
     });
+
+    // Grab user type from id
+    let userType = await User.findOne(
+      { _id: req.user.id },
+      { type: 1, _id: 0 }
+    );
+    console.log(userType);
+
+    // Authorize only company to access this route
+    if (userType.type !== "Company") {
+      return res.status(401).json({
+        success: false,
+        message: "No privileges to access API"
+      });
+    }
+
     if (job) {
       return res.status(400).json({
         success: false,

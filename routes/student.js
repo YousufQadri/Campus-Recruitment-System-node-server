@@ -4,6 +4,7 @@ const Joi = require("@hapi/joi");
 const mongoose = require("mongoose");
 
 const Student = require("../models/Student");
+const User = require("../models/User");
 const auth = require("../middlewares/auth");
 
 // create API params schema for validation
@@ -64,6 +65,22 @@ router.post("/create-profile", auth, async (req, res) => {
   try {
     // Check if student exist
     let student = await Student.findOne({ studentID: req.user.id });
+
+    // Grab user type from id
+    let userType = await User.findOne(
+      { _id: req.user.id },
+      { type: 1, _id: 0 }
+    );
+    console.log(userType);
+
+    // Authorize only company to access this route
+    if (userType.type !== "Student") {
+      return res.status(401).json({
+        success: false,
+        message: "No privileges to access API"
+      });
+    }
+
     if (student) {
       return res.status(400).json({
         success: false,
