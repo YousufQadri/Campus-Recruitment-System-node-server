@@ -71,7 +71,7 @@ router.post("/create-job", auth, async (req, res) => {
       { _id: req.user.id },
       { type: 1, _id: 0 }
     );
-    console.log(userType);
+    // console.log(userType);
 
     // Authorize only company to access this route
     if (userType.type !== "Company") {
