@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const JobSchema = new Schema(
   {
-    title: {
+    jobTitle: {
       type: String,
       required: true
     },
@@ -11,7 +11,7 @@ const JobSchema = new Schema(
       type: String,
       required: true
     },
-    companyID: {
+    companyId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Company",
       required: true
