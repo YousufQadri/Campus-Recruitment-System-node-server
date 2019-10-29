@@ -3,6 +3,18 @@ const Schema = mongoose.Schema;
 
 const StudentSchema = new Schema(
   {
+    studentName: {
+      type: String,
+      required: true
+    },
+    email: {
+      type: String,
+      required: true
+    },
+    password: {
+      type: String,
+      required: true
+    },
     qualification: {
       type: Array,
       required: true
@@ -14,11 +26,6 @@ const StudentSchema = new Schema(
     appliedJobs: {
       type: Array,
       default: []
-    },
-    studentID: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true
     }
   },
   {
