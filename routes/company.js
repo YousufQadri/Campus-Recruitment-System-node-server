@@ -17,9 +17,42 @@ const postApiParamsSchema = Joi.object({
 // @desc     Get companies
 // @access   Private
 
-router.get("/get-companies", auth, async (req, res) => {
+router.get("/get-companies/", auth, async (req, res) => {
   try {
+    // console.log(req.param.id);
+
     const companies = await Company.find({});
+
+    if (companies.length < 1) {
+      return res.json({
+        success: true,
+        message: "No companies found"
+      });
+    }
+    res.json({
+      success: true,
+      companies
+    });
+  } catch (error) {
+    console.log("Error:", error.message);
+    res.status(500).json({
+      message: "Internal server error",
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// @route    GET api/v1/company/get-companies/:id
+// @desc     Get company by ID
+// @access   Private
+
+router.get("/get-companies/:id", auth, async (req, res) => {
+  try {
+    const cID = req.params.id;
+    console.log(req.params.id);
+
+    const companies = await Company.findOne({ companyID: cID });
 
     if (companies.length < 1) {
       return res.json({
