@@ -64,7 +64,8 @@ const companyAuth = async (req, res, next) => {
     const decoded = await jwt.verify(token, JWT_SECRET);
 
     // Check company in DB
-    let companyExist = await Company.findOne({ _id: decoded.company._id });
+    let companyExist = await Company.findOne({ _id: decoded.company.id });
+
     if (!companyExist) {
       res.status(401).json({
         success: false,

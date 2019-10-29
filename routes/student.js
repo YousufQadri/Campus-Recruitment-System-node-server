@@ -4,7 +4,6 @@ const Joi = require("@hapi/joi");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("config");
-const mongoose = require("mongoose");
 
 const Student = require("../models/Student");
 const auth = require("../middlewares/auth");
@@ -22,15 +21,6 @@ const postApiParamsSchema = Joi.object({
     .required(),
   qualification: Joi.string().required(),
   cgpa: Joi.number().required()
-});
-// Login API param scheema validation
-const loginApiParamsSchema = Joi.object({
-  password: Joi.string()
-    .min(4)
-    .required(),
-  email: Joi.string()
-    .email()
-    .required()
 });
 
 // @route    POST api/v1/student/register
@@ -141,13 +131,6 @@ router.post("/login", async (req, res) => {
     });
   }
 
-  // const { error } = loginApiParamsSchema.validate({ email, password });
-  // if (error) {
-  //   return res.status(400).json({
-  //     success: false,
-  //     message: error.message
-  //   });
-  // }
   try {
     // Find student
     const student = await Student.findOne({ email });
@@ -201,7 +184,6 @@ router.post("/login", async (req, res) => {
 router.get("/get-profile", auth.studentAuth, async (req, res) => {
   try {
     const student = await Student.find({ _id: req.student.id });
-    console.log(req.student.id);
 
     if (student.length < 1) {
       return res.json({

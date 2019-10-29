@@ -21,7 +21,7 @@ const AppliedJobSchema = new Schema(
       ref: "Company",
       required: true
     },
-    StudentId: {
+    studentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Student",
       required: true

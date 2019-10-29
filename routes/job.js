@@ -1,9 +1,157 @@
-// const express = require("express");
-// const router = express.Router();
-// const Joi = require("@hapi/joi");
-// const mongoose = require("mongoose");
+const express = require("express");
+const router = express.Router();
+const Joi = require("@hapi/joi");
+const mongoose = require("mongoose");
+const auth = require("../middlewares/auth");
 
-// const Job = require("../models/Job");
+const Job = require("../models/Job");
+const AppliedJob = require("../models/AppliedJob");
+
+const jobApiParamsSchema = Joi.object({
+  jobTitle: Joi.string().required(),
+  description: Joi.string().required()
+});
+const applyJobApiParamsSchema = Joi.object({
+  experience: Joi.string().required(),
+  skills: Joi.string().required()
+});
+
+// @route    POST api/v1/job/create-job
+// @desc     Create job
+// @access   Private
+router.post("/create-job", auth.companyAuth, async (req, res) => {
+  let { jobTitle, description } = req.body;
+
+  if (!jobTitle || !description) {
+    return res.status(400).json({
+      success: false,
+      message: "Please fill all fields"
+    });
+  }
+  // Remove whitespaces
+  jobTitle = jobTitle.trim();
+  description = description.trim();
+  const { error } = jobApiParamsSchema.validate({
+    jobTitle,
+    description
+  });
+
+  if (error) {
+    return res.status(400).json({
+      success: false,
+      message: error.message
+    });
+  }
+  try {
+    let job = await new Job({
+      jobTitle,
+      description,
+      companyId: req.company.id
+    });
+    await job.save();
+    job = await job.populate("companyId", { password: 0 }).execPopulate();
+    return res.status(200).json({
+      success: true,
+      job,
+      message: "Job created!"
+    });
+  } catch (error) {
+    return res.status(500).send({
+      success: false,
+      message: "Internal server error"
+    });
+  }
+});
+
+// @route    POST api/v1/job/apply
+// @desc     Apply for job
+// @access   Private
+router.post("/apply/:id", auth.studentAuth, async (req, res) => {
+  let { experience, skills } = req.body;
+
+  // Check empty body
+  if (!experience || !skills) {
+    return res.status(400).json({
+      success: false,
+      message: "Please fill all fields!"
+    });
+  }
+  experience = experience.trim();
+  skills = skills.trim();
+
+  // Check valid object ID
+  const jobID = mongoose.Types.ObjectId.isValid(req.params.id);
+  if (!jobID) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid job id!"
+    });
+  }
+
+  // Check body matching param schema
+  const { error } = applyJobApiParamsSchema.validate({
+    experience,
+    skills
+  });
+  if (error) {
+    return res.status(400).json({
+      success: false,
+      message: error.message
+    });
+  }
+  try {
+    // Check if job id exist
+    const findJob = await Job.findOne({ _id: req.params.id });
+    if (!findJob) {
+      return res.status(400).json({
+        success: false,
+        message: "No job found against this ID"
+      });
+    }
+
+    // Check if already applied
+    const appliedJobs = await AppliedJob.find({ studentId: req.student.id });
+    const specificJob = appliedJobs.filter(job => {
+      console.log("Joid: ", job.jobId);
+      console.log("id: ", req.params.id);
+
+      return job.jobId === req.params.id;
+    });
+    if (specificJob.length !== 0) {
+      return res.status(400).json({
+        success: false,
+        message: "You already applied for this job!"
+      });
+    }
+
+    // Grab company to display job creator
+    const company = await findJob
+      .populate("companyId", { password: 0 })
+      .execPopulate();
+
+    const job = await new AppliedJob({
+      experience,
+      skills,
+      jobId: req.params.id,
+      companyId: company.companyId._id,
+      studentId: req.student.id
+    });
+    await job.save();
+    jobWithDetails = await job
+      .populate("studentId", { password: 0 })
+      .execPopulate();
+    return res.status(200).json({
+      success: true,
+      message: "Successfully applied for job",
+      jobWithDetails
+    });
+  } catch (error) {
+    return res.status(500).send({
+      success: false,
+      message: "Internal server error"
+    });
+  }
+});
 // const User = require("../models/User");
 // const auth = require("../middlewares/auth");
 
@@ -150,4 +298,4 @@
 //   }
 // });
 
-// module.exports = router;
+module.exports = router;
