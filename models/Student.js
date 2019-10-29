@@ -6,6 +6,7 @@ const StudentSchema = new Schema(
   {
     studentName: {
       type: String,
+      unique: true,
       required: true
     },
     email: {
@@ -23,7 +24,7 @@ const StudentSchema = new Schema(
       required: true
     },
     qualification: {
-      type: Array,
+      type: String,
       required: true
     },
     cgpa: {

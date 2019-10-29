@@ -26,7 +26,7 @@ const studentAuth = async (req, res, next) => {
     const decoded = await jwt.verify(token, JWT_SECRET);
 
     // Check student in DB
-    let studentExist = await Student.findOne({ _id: decoded.student._id });
+    let studentExist = await Student.findOne({ id: decoded.student._id });
     if (!studentExist) {
       res.status(401).json({
         success: false,

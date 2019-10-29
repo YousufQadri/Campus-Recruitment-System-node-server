@@ -12,14 +12,14 @@ const job = require("./routes/job");
 connectDB();
 
 // Middleware
-app.use(cors());
+// app.use(cors());
 app.use(express.json({ extender: false }));
 
 // Routes
-app.use("/api/v1/user", user);
-app.use("/api/v1/company", company);
+// app.use("/api/v1/user", user);
+// app.use("/api/v1/company", company);
 app.use("/api/v1/student", student);
-app.use("/api/v1/job", job);
+// app.use("/api/v1/job", job);
 
 // Assign PORT
 const PORT = process.env.PORT || 5000;

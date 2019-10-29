@@ -4,6 +4,7 @@ const Joi = require("@hapi/joi");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("config");
+const auth = require("../middlewares/auth");
 
 const User = require("../models/User");
 
