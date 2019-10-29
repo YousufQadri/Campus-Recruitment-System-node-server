@@ -20,6 +20,8 @@ app.use("/api/v1/company", company);
 app.use("/api/v1/student", student);
 app.use("/api/v1/job", job);
 
+// Default route (404)
+
 // Assign PORT
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log("Server running at port " + PORT));

@@ -6,6 +6,9 @@ const jwt = require("jsonwebtoken");
 const config = require("config");
 
 const Student = require("../models/Student");
+const Jobs = require("../models/Job");
+const Company = require("../models/Company");
+const AppliedJobs = require("../models/AppliedJob");
 const auth = require("../middlewares/auth");
 
 const JWT_SECRET = process.env.JWT_SECRET || config.get("JWT_SECRET");
@@ -200,6 +203,32 @@ router.get("/get-profile", auth.studentAuth, async (req, res) => {
     res.status(500).json({
       message: "Internal server error",
       success: false,
+      error: error.message
+    });
+  }
+});
+
+// @route    GET api/v1/student/get-jobs
+// @desc     Get jobs and applied jobs
+// @access   Private
+
+router.get("/get-jobs", auth.studentAuth, async (req, res) => {
+  try {
+    const allJobs = await Jobs.find({});
+    const appliedJobs = await AppliedJobs.find({ studentId: req.student.id });
+    const companies = await Company.find({});
+
+    return res.status(200).send({
+      success: true,
+      message: "Jobs and companies record",
+      allJobs,
+      appliedJobs,
+      companies
+    });
+  } catch (error) {
+    return res.status(500).send({
+      success: false,
+      message: "Internal server error",
       error: error.message
     });
   }
