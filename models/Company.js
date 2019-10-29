@@ -1,10 +1,29 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const validator = require("validator");
 
 const CompanySchema = new Schema(
   {
-    name: {
+    companyName: {
       type: String,
+      required: true
+    },
+    email: {
+      type: String,
+      unique: true,
+      required: true,
+      validate(value) {
+        if (!validator.isEmail(value)) {
+          throw new Error("Email is invalid");
+        }
+      }
+    },
+    password: {
+      type: String,
+      required: true
+    },
+    contactNo: {
+      type: Number,
       required: true
     },
     description: {
@@ -16,11 +35,6 @@ const CompanySchema = new Schema(
       type: String,
       required: true,
       default: ""
-    },
-    companyID: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true
     }
   },
   {
