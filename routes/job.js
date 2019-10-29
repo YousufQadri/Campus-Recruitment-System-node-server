@@ -112,10 +112,7 @@ router.post("/apply/:id", auth.studentAuth, async (req, res) => {
     // Check if already applied
     const appliedJobs = await AppliedJob.find({ studentId: req.student.id });
     const specificJob = appliedJobs.filter(job => {
-      console.log("Joid: ", job.jobId);
-      console.log("id: ", req.params.id);
-
-      return job.jobId === req.params.id;
+      return req.params.id !== job.jobId;
     });
     if (specificJob.length !== 0) {
       return res.status(400).json({
