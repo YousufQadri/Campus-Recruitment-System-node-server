@@ -11,7 +11,7 @@ const job = require("./routes/job");
 connectDB();
 
 // Middleware
-// app.use(cors());
+app.use(cors());
 app.use(express.json({ extender: false }));
 
 // Routes
