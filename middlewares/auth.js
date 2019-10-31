@@ -103,7 +103,9 @@ const adminAuth = async (req, res, next) => {
     const decoded = await jwt.verify(token, JWT_SECRET);
 
     // Check admin in DB
-    let adminExist = await Company.findOne({ _id: decoded.admin._id });
+    let adminExist = await Admin.findOne({ _id: decoded.admin.id });
+    console.log(adminExist);
+
     if (!adminExist) {
       res.status(401).json({
         success: false,
