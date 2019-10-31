@@ -6,6 +6,7 @@ const connectDB = require("./config/db");
 const company = require("./routes/company");
 const student = require("./routes/student");
 const job = require("./routes/job");
+const admin = require("./routes/admin");
 
 // Connect with DB
 connectDB();
@@ -19,6 +20,7 @@ app.use(express.json({ extender: false }));
 app.use("/api/v1/company", company);
 app.use("/api/v1/student", student);
 app.use("/api/v1/job", job);
+app.use("/api/v1/admin", admin);
 
 // Default route (404)
 
