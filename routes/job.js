@@ -145,7 +145,8 @@ router.post("/apply/:id", auth.studentAuth, async (req, res) => {
   } catch (error) {
     return res.status(500).send({
       success: false,
-      message: "Internal server error"
+      message: "Internal server error",
+      error: error.message
     });
   }
 });
