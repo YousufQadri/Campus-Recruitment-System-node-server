@@ -4,8 +4,12 @@ const Joi = require("@hapi/joi");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("config");
+const mongoose = require("mongoose");
 
 const Company = require("../models/Company");
+const Student = require("../models/Student");
+const Jobs = require("../models/Job");
+const AppliedJobs = require("../models/AppliedJob");
 const auth = require("../middlewares/auth");
 
 const JWT_SECRET = process.env.JWT_SECRET || config.get("JWT_SECRET");
@@ -40,7 +44,7 @@ router.post("/register", async (req, res) => {
 
   // Lowercase email
   email = email.toLowerCase();
-  companyName = companyName.trim();
+  // companyName = companyName.trim();
 
   if (
     !companyName ||
@@ -200,7 +204,10 @@ router.post("/login", async (req, res) => {
 // @access   Private
 router.get("/get-profile", auth.companyAuth, async (req, res) => {
   try {
-    const company = await Company.find({ _id: req.company.id });
+    const company = await Company.find(
+      { _id: req.company.id },
+      { password: 0 }
+    );
 
     if (company.length < 1) {
       return res.json({
@@ -222,6 +229,38 @@ router.get("/get-profile", auth.companyAuth, async (req, res) => {
   }
 });
 
+// @route    GET api/v1/company/get-data
+// @desc     Get students and jobs data
+// @access   Private
+router.get("/get-data", auth.companyAuth, async (req, res) => {
+  try {
+    const allStudents = await Student.find({});
+    const companyJobs = await Jobs.find({ companyId: req.company.id });
+    const applicants = await AppliedJobs.find({
+      companyId: req.company.id
+    })
+      .populate("studentId", { password: 0 })
+      .populate("jobId");
+    // const appliedStudents = await students
+    //   .populate("studentId", {
+    //     password: 0
+    //   })
+    //   .execPopulate();
+    return res.status(200).send({
+      success: true,
+      message: "Students and jobs record",
+      allStudents,
+      companyJobs,
+      applicants
+    });
+  } catch (error) {
+    return res.status(500).send({
+      success: false,
+      message: "Internal server error",
+      error: error.message
+    });
+  }
+});
 // const express = require("express");
 // const router = express.Router();
 // const Joi = require("@hapi/joi");
