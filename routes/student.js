@@ -4,7 +4,7 @@ const Joi = require("@hapi/joi");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("config");
-
+const mongoose = require("mongoose");
 const Student = require("../models/Student");
 const Jobs = require("../models/Job");
 const Company = require("../models/Company");
@@ -186,7 +186,10 @@ router.post("/login", async (req, res) => {
 // @access   Private
 router.get("/get-profile", auth.studentAuth, async (req, res) => {
   try {
-    const student = await Student.find({ _id: req.student.id });
+    const student = await Student.find(
+      { _id: req.student.id },
+      { password: 0 }
+    );
 
     if (student.length < 1) {
       return res.json({
@@ -208,14 +211,16 @@ router.get("/get-profile", auth.studentAuth, async (req, res) => {
   }
 });
 
-// @route    GET api/v1/student/get-jobs
-// @desc     Get jobs and applied jobs
+// @route    GET api/v1/student/get-data
+// @desc     Get jobs and companies data
 // @access   Private
-
-router.get("/get-jobs", auth.studentAuth, async (req, res) => {
+router.get("/get-data", auth.studentAuth, async (req, res) => {
   try {
     const allJobs = await Jobs.find({});
-    const appliedJobs = await AppliedJobs.find({ studentId: req.student.id });
+    const appliedJobs = await AppliedJobs.find({
+      studentId: { $in: req.student.id }
+    });
+    // await appliedJobs.populate("companyId", { password: 0 }).execPopulate();
     const companies = await Company.find({});
 
     return res.status(200).send({
