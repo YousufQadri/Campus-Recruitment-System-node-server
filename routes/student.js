@@ -219,7 +219,10 @@ router.get("/get-data", auth.studentAuth, async (req, res) => {
     const allJobs = await Jobs.find({});
     const appliedJobs = await AppliedJobs.find({
       studentId: { $in: req.student.id }
-    });
+    })
+      .populate("companyId", { password: 0 })
+      .populate("studentId", { password: 0 })
+      .populate("jobId");
     // await appliedJobs.populate("companyId", { password: 0 }).execPopulate();
     const companies = await Company.find({});
 
