@@ -26,6 +26,30 @@ const postApiParamsSchema = Joi.object({
   cgpa: Joi.number().required()
 });
 
+// @route    GET api/v1/student/auth
+// @desc     Get student data
+// @access   Private
+router.get("/auth", auth.studentAuth, async (req, res) => {
+  try {
+    const authUser = await Student.findById(req.student.id, { password: 0 });
+
+    if (!authUser)
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized access. Please login again"
+      });
+
+    return res.status(200).json(authUser);
+  } catch (error) {
+    console.log("Error:", error.message);
+    res.status(500).json({
+      message: "Internal server error",
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 // @route    POST api/v1/student/register
 // @desc     Register student
 // @access   Public
