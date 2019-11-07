@@ -15,6 +15,30 @@ const auth = require("../middlewares/auth");
 
 const JWT_SECRET = process.env.JWT_SECRET || config.get("JWT_SECRET");
 
+// @route    GET api/v1/admin/auth
+// @desc     Get student data
+// @access   Private
+router.get("/auth", auth.adminAuth, async (req, res) => {
+  try {
+    const authUser = await Admin.findById(req.admin.id, { password: 0 });
+
+    if (!authUser)
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized access. Please login again"
+      });
+
+    return res.status(200).json(authUser);
+  } catch (error) {
+    console.log("Error:", error.message);
+    res.status(500).json({
+      message: "Internal server error",
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 // @route    POST api/v1/admin/login
 // @desc     Admin company
 // @access   Public
@@ -86,7 +110,7 @@ router.get("/get-data", auth.adminAuth, async (req, res) => {
   try {
     const allStudents = await Student.find({}, { password: 0 });
     const companies = await Company.find({}, { password: 0 });
-    const companyJobs = await Jobs.find({});
+    const companyJobs = await Jobs.find({}).populate("companyId");
 
     return res.status(200).send({
       success: true,

@@ -110,7 +110,9 @@ router.post("/apply/:id", auth.studentAuth, async (req, res) => {
     }
 
     // Check if already applied
-    const appliedJobs = await AppliedJob.find({ studentId: req.student.id });
+    const appliedJobs = await AppliedJob.find({
+      $and: [{ studentId: req.student.id }, { jobId: req.params.id }]
+    });
     const specificJob = appliedJobs.filter(job => {
       return req.params.id !== job.jobId;
     });
@@ -126,6 +128,7 @@ router.post("/apply/:id", auth.studentAuth, async (req, res) => {
       .populate("companyId", { password: 0 })
       .execPopulate();
 
+    console.log(company.companyId._id);
     const job = await new AppliedJob({
       experience,
       skills,

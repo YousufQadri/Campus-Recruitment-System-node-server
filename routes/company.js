@@ -28,6 +28,30 @@ const postApiParamsSchema = Joi.object({
   contactNo: Joi.number().required()
 });
 
+// @route    GET api/v1/company/auth
+// @desc     Get company data
+// @access   Private
+router.get("/auth", auth.companyAuth, async (req, res) => {
+  try {
+    const authUser = await Company.findById(req.company.id, { password: 0 });
+
+    if (!authUser)
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized access. Please login again"
+      });
+
+    return res.status(200).json(authUser);
+  } catch (error) {
+    console.log("Error:", error.message);
+    res.status(500).json({
+      message: "Internal server error",
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 // @route    POST api/v1/company/register
 // @desc     Register company
 // @access   Public
