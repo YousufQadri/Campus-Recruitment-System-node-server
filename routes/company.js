@@ -259,7 +259,9 @@ router.get("/get-profile", auth.companyAuth, async (req, res) => {
 router.get("/get-data", auth.companyAuth, async (req, res) => {
   try {
     const allStudents = await Student.find({});
-    const companyJobs = await Jobs.find({ companyId: req.company.id });
+    const companyJobs = await Jobs.find({ companyId: req.company.id }).populate(
+      "companyId"
+    );
     const applicants = await AppliedJobs.find({
       companyId: req.company.id
     })

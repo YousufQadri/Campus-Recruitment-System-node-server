@@ -240,7 +240,7 @@ router.get("/get-profile", auth.studentAuth, async (req, res) => {
 // @access   Private
 router.get("/get-data", auth.studentAuth, async (req, res) => {
   try {
-    const allJobs = await Jobs.find({});
+    const allJobs = await Jobs.find({}).populate("companyId");
     const appliedJobs = await AppliedJobs.find({
       studentId: { $in: req.student.id }
     })
